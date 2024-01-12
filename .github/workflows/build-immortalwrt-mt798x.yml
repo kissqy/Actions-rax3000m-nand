@@ -91,6 +91,8 @@ jobs:
         git config --global user.name "github-actions[bot]"
         #git fetch https://github.com/padavanonly/immortalwrt-mt798x
         #git merge FETCH_HEAD
+        sed -i '$a src-git smpackage https://github.com/kenzok8/small-package' feeds.conf.default
+        sed -i '$a src-git istore https://github.com/linkease/istore;main' feeds.conf.default
         ./scripts/feeds update -a && ./scripts/feeds install -a        
         chmod +x $GITHUB_WORKSPACE/$DIY_SH && $GITHUB_WORKSPACE/$DIY_SH
 
