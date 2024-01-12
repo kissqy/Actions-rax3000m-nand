@@ -1,7 +1,7 @@
 **闭源驱动** | [开源驱动](README_mainline.md)
 
 # Actions-rax3000m-emmc
-使用 GitHub Actions 在线编译定制 CMCC RAX3000M eMMC version 的 immortalwrt-mt798x 固件
+使用 GitHub Actions 在线编译定制 CMCC RAX3000M NAND version 的 immortalwrt-mt798x 固件
 
 ## 固件特性
 使用 [hanwckf](https://github.com/hanwckf) 大佬的 [immortalwrt-mt798x](https://github.com/hanwckf/immortalwrt-mt798x) 项目仓库，'openwrt-21.02' 分支源码编译，无线使用 mtwifi 原厂无线驱动，内核版本 5.4.x
@@ -11,9 +11,9 @@
 固件默认选中软件包
 `f2fsck, losetup, mkf2fs, kmod-fs-f2fs, kmod-mmc, luci-app-ksmbd, luci-i18n-ksmbd-zh-cn, ksmbd-utils` 等
 
-添加集成软件包
+~添加集成软件包
 `cfdisk, htop, openssl-util, kmod-fuse, kmod-usb-net-ipheth, kmod-usb-net-rndis, luci-app-argon-config, luci-app-autoreboot, luci-app-diskman, luci-app-ksmbd, luci-app-nlbwmon, luci-app-openclash, luci-app-openvpn, luci-app-ttyd, luci-app-upnp, luci-app-usb-printer, luci-app-zerotier, luci-theme-argon`
-等并预置 openclash 内核
+等并预置 openclash 内核~
 
 加入由 [1715173329 天灵](https://github.com/1715173329) 使用 js 重写，[237大佬](https://www.right.com.cn/forum/?364126) 适配硬件 QoS 的 [luci-app-eqos-mtk](https://github.com/padavanonly/immortalwrt-mt798x/commit/7c8019ce4bcb1a79c01c517b62e49f059ca70049)
 
@@ -21,7 +21,7 @@
 在 Actions 选择该工作流手动点击 Run workflow 执行编译，等待固件编译完成上传至 releases 发布即可下载
 
 ### 配置说明
-- 默认 LAN IP 已更改为 `192.168.6.1`，可在 `scripts/diy.sh` 处修改
+- 默认 LAN IP 已更改为 `192.168.123.1`，可在 `scripts/diy.sh` 处修改
 
 - 需要取消集成或添加其他软件包可在 `configs/rax3000m-emmc_mtksdk.config` 处参考注释内容自行修改或添加配置选项
 
