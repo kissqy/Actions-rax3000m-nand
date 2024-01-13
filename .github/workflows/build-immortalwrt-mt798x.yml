@@ -95,7 +95,7 @@ jobs:
         sed -i '$a src-git istore https://github.com/linkease/istore;main' feeds.conf.default
         ./scripts/feeds update -a && ./scripts/feeds install -a
         rm -rf feeds/smpackage/{base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb}
-        rm -rf ./feeds/packages/net/mosdns
+        rm -rf ./feeds/packages/net/mosdns && cp -r -f ./feeds/smpackage/mosdns ./feeds/packages/net/mosdns
         chmod +x $GITHUB_WORKSPACE/$DIY_SH && $GITHUB_WORKSPACE/$DIY_SH
 
     - name: 导入补丁和配置
