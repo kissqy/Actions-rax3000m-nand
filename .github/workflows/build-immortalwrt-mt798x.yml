@@ -92,7 +92,7 @@ jobs:
         #git fetch https://github.com/padavanonly/immortalwrt-mt798x
         #git merge FETCH_HEAD
         rm -rf feeds/packages/lang/golang
-        git clone https://github.com/sbwml/packages_lang_golang -b 20.x feeds/packages/lang/golang
+        git clone https://github.com/sbwml/packages_lang_golang -b 21.x feeds/packages/lang/golang
         sed -i '$a src-git smpackage https://github.com/kenzok8/small-package' feeds.conf.default
         sed -i '$a src-git istore https://github.com/linkease/istore;main' feeds.conf.default
         ./scripts/feeds update -a && ./scripts/feeds install -a
