@@ -26,11 +26,6 @@ on:
         required: true
         default: true
         type: boolean
-      USE_52MHZ:
-        description: 'Use 52MHz max-frequency'
-        required: true
-        default: true
-        type: boolean
 
 env:
   REPO_URL: https://github.com/hanwckf/immortalwrt-mt798x
@@ -94,9 +89,13 @@ jobs:
         sed -i '$a src-git smpackage https://github.com/kenzok8/small-package' feeds.conf.default
         sed -i '$a src-git istore https://github.com/linkease/istore;main' feeds.conf.default
         ./scripts/feeds update -a && ./scripts/feeds install -a
+        # 防止包冲突
         rm -rf feeds/smpackage/{base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb}
+        # 替换原版 mosdns 防止 luci 界面编译失败
         rm -rf ./feeds/packages/net/mosdns && cp -r -f ./feeds/smpackage/mosdns ./feeds/packages/net/mosdns
+        # 安装 golang 1.20
         rm -rf feeds/packages/lang/golang && git clone https://github.com/sbwml/packages_lang_golang -b 20.x feeds/packages/lang/golang
+        # 重新安装一次 防止依赖错误
         ./scripts/feeds install -a
         chmod +x $GITHUB_WORKSPACE/$DIY_SH && $GITHUB_WORKSPACE/$DIY_SH
 
@@ -116,14 +115,9 @@ jobs:
         mkdir openwrt/target/linux/mediatek/mt7981/base-files/lib/firmware
         cp eeprom/nx30pro_eeprom.bin openwrt/target/linux/mediatek/mt7981/base-files/lib/firmware/MT7981_iPAiLNA_EEPROM.bin
         sed -i 's/caldata_extract_mmc/# caldata_extract_mmc/' openwrt/target/linux/mediatek/mt7981/base-files/lib/preinit/90_extract_caldata
+        # 将emmc换为nand
+        sed -i 's/rax3000m-emmc/rax3000m-nand/' openwrt/target/linux/mediatek/mt7981/base-files/lib/preinit/90_extract_caldata
         sed -i 's#./files/mt7981-default-eeprom/MT7981_iPAiLNA_EEPROM.bin##' openwrt/package/mtk/drivers/mt_wifi/Makefile
-
-    # - name: 设置 dts 闪存频率
-    #   if: env.USE_52MHZ == 'true'
-    #   run: |
-    #     sed -i -e '/bus-width = <8>;/ a\	cap-mmc-highspeed;' openwrt/target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek/mt7981-cmcc-rax3000m-emmc.dts
-    #     sed -i 's/26000000/52000000/g' openwrt/target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek/mt7981-cmcc-rax3000m-emmc.dts
-    #     grep max-frequency openwrt/target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek/mt7981-cmcc-rax3000m-emmc.dts
 
     - name: 下载文件
       run: |
@@ -176,7 +170,7 @@ jobs:
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success' && !cancelled()
       run: |
-        echo -e "### immortalwrt-mt7981-cmcc_rax3000m-emmc" >> release.txt
+        echo -e "### immortalwrt-mt7981-cmcc_rax3000m-nand" >> release.txt
         wlan_luci_interface=""
         if grep -q 'CONFIG_PACKAGE_mtwifi-cfg=y' openwrt/.config; then
           echo "- 使用 OpenWrt 原生无线控制界面" >> release.txt
@@ -195,7 +189,7 @@ jobs:
         fi
         max_frequency=$(($(grep -oP "max-frequency = <\K[0-9]*" openwrt/target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek/mt7981-cmcc-rax3000m-emmc.dts) / 1000000))
         echo "- 使用闪存频率: ${max_frequency}MHz" >> release.txt
-        release_tag=$(date +"%Y.%m.%d-mt7981-cmcc_rax3000m-emmc-${wlan_luci_interface}-${eeprom_status}-${max_frequency}MHz")
+        release_tag=$(date +"%Y.%m.%d-mt7981-cmcc_rax3000m-nand-${wlan_luci_interface}-${eeprom_status}")
         echo "release_tag=${release_tag}" >> $GITHUB_OUTPUT
         echo "status=success" >> $GITHUB_OUTPUT
 
