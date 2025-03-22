@@ -73,8 +73,8 @@ jobs:
     - name: 开启缓存
       uses: klever1988/cachewrtbuild@main
       with:
-        ccache: 'true'
-        mixkey: 'openwrt21-cortexa53-${{ github.sha }}'
+        ccache: 'false'
+        mixkey: 'openwrt21-cortexa53'
         prefix: ${{ github.workspace }}/openwrt
 
     - name: 更新 & 安装 feeds & 执行脚本
