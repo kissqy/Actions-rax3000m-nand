@@ -74,7 +74,7 @@ jobs:
       uses: klever1988/cachewrtbuild@main
       with:
         ccache: 'true'
-        mixkey: 'openwrt21-cortexa53'
+        mixkey: 'openwrt21-cortexa53-${{ github.sha }}'
         prefix: ${{ github.workspace }}/openwrt
 
     - name: 更新 & 安装 feeds & 执行脚本
